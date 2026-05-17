@@ -1,162 +1,102 @@
-# Echo-OSINT: Autonomous Intelligence Engine
+# Echo-OSINT
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-0.1.0--alpha-blue" alt="Version">
+  <img src="https://img.shields.io/badge/Version-0.2.0-blue" alt="Version">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
-  <img src="https://img.shields.io/badge/TypeScript-Ready-3178c6" alt="TypeScript">
-  <img src="https://img.shields.io/badge/CrewAI-Powered-ff6b6b" alt="CrewAI">
-  <img src="https://img.shields.io/badge/NVIDIA-NIM-76b900" alt="NVIDIA NIM">
+  <img src="https://img.shields.io/badge/TypeScript-5.7-3178c6" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Stack-Express%20%2B%20React-22c55e" alt="Stack">
 </p>
 
-> **Premium OSINT intelligence using free data sources + AI orchestration**
+> **Autonomous intelligence engine: investigate a target, evaluate evidence, surface what matters.**
+
+Give Echo-OSINT a username, domain, email, or IP. It runs targeted reconnaissance, structures the findings as evidence-backed beliefs, generates a brief, and proposes the next leads to chase — all in one shot, with a transparent audit trail.
 
 ---
 
-## The Problem
+## What it does
 
-Current OSINT tools require expensive subscriptions:
-- Brandwatch/Meltwater: **$10,000+/year**
-- Twitter API: **$100+/month**
-- News feeds: **$500+/month**
-
-**Echo-OSINT** delivers better intelligence at 1/100th the cost by leveraging free data sources + AI.
-
----
-
-## The Vision
-
-**Echo-OSINT** is an autonomous intelligence engine that produces premium-quality OSINT (Open Source Intelligence) without requiring expensive data subscriptions.
-
-| Component | What It Does |
-|-----------|-------------|
-| **Free Data Sources** | Reddit, GitHub, HackerNews, SearXNG, RSS |
-| **CrewAI Orchestration** | Multi-agent research crews with memory |
-| **NVIDIA NIM Inference** | High-quality LLM synthesis (free tier: 1k req/day) |
-| **Knowledge Graph** | Temporal signal propagation tracking |
-
-### The Promise
-
-```
-ORDINARY: Pay $1000/month for Twitter API → Get raw tweets
-ECHO-OSINT: Use free Reddit/GitHub/HN → AI crew researches
-            cross-platform → NVIDIA NIM synthesizes →
-            Better intelligence at 1/100th the cost
-```
+| Capability | Detail |
+|------------|--------|
+| **Username recon** | Checks 50+ platforms (GitHub, GitLab, Mastodon, dev/social/gaming/finance) in parallel |
+| **Domain recon** | RDAP/WHOIS, DNS-over-HTTPS (A/MX/NS/TXT), subdomain enumeration via crt.sh CT logs |
+| **Belief space** | Every finding becomes a belief with `established` / `likely` / `uncertain` status |
+| **Significance scoring** | Multi-factor: novelty + rarity + severity + timeliness (no opaque numbers) |
+| **Intelligence brief** | Auto-generated summary with established facts, leads, negative findings |
+| **Investigation history** | Every scan persists to `investigations/YYYY-MM-DD/` — resume, compare, export |
+| **Dashboard** | React UI for running scans, exploring findings, exporting JSON |
 
 ---
 
-## Features
-
-- **Natural Language Queries**: Ask questions in plain English
-- **Multi-Source Fusion**: Collects from Reddit, GitHub, HackerNews, and more
-- **Self-Correcting Research**: CrewAI agents validate and refine findings
-- **Confidence Scoring**: Every finding includes reliability assessment
-- **Prediction Engine**: Forecasts signal propagation across platforms
-- **Fully Local-Ready**: Self-host SearXNG, Qdrant, Neo4j for complete privacy
-
----
-
-## Quick Start
-
-### 1. Clone & Install
+## Quick start
 
 ```bash
 git clone https://github.com/Jinish2170/Echo-OSINT.git
 cd Echo-OSINT
 npm install
+cd frontend && npm install && cd ..
+
+# Run API (3001) + dashboard (3000) together
+npm run start:all
 ```
 
-### 2. Configure NVIDIA API (Required)
+Then open **http://localhost:3000** and scan a target.
 
-1. Go to **[https://build.nvidia.com/](https://build.nvidia.com/)**
-2. Sign up for free account
-3. Generate API key
-4. Copy environment template:
+### Or use the CLI
 
 ```bash
-copy .env.example .env
+npm run dev -- octocat investigator
+npm run dev -- github.com investigator deep
 ```
 
-5. Edit `.env` and add your key:
-
-```env
-NVIDIA_API_KEY=nv-your-api-key-here
-```
-
-### 3. Run Your First Query
+### Or hit the API directly
 
 ```bash
-npm run dev -- "artificial intelligence trends 2025"
-```
+npm run api    # backend only on :3001
 
-### Expected Output
-
-```
-🔍 Echo-OSINT: Processing query "artificial intelligence trends 2025"
-📡 Collected from 4 sources
-📊 Total findings: 47
-🤖 CrewAI crew initialized (ready for full research cycle)
-✅ Query complete in 2450ms | Confidence: 84.3%
-
-INTELLIGENCE RESULT
-📊 Confidence: 84.3%
-📁 Sources: 4
-🔍 Findings: 47
-
-🔮 Predictions:
-• High likelihood of mainstream coverage within 24-48 hours (75% confidence)
+curl -X POST http://localhost:3001/recon \
+  -H "Content-Type: application/json" \
+  -d '{"target":"octocat","mode":"investigator"}'
 ```
 
 ---
 
-## Programmatic Usage
+## Three modes, three users
 
-```typescript
-import { EchoOSINT } from './src';
-
-const engine = new EchoOSINT();
-
-// Run an intelligence query
-const result = await engine.query('trends in quantum computing');
-
-// Access structured results
-console.log('Summary:', result.synthesis.summary);
-console.log('Confidence:', result.confidence);
-console.log('Predictions:', result.synthesis.predictions);
-console.log('Recommendations:', result.synthesis.recommendations);
-```
+| Mode | For | Question it answers |
+|------|-----|---------------------|
+| **Hunter** | Pentesters, bug bounty | "What attack surface does this target expose?" |
+| **Investigator** | Journalists, analysts | "What connections and identities back this target?" |
+| **Watcher** | Threat intel, monitoring | "What's changed since last scan?" |
 
 ---
 
-## Data Sources
+## API
 
-| Source | Auth Required | Rate Limit | Status |
-|--------|---------------|------------|--------|
-| Reddit | Optional | 60/min (free) | ✅ Ready |
-| GitHub | Optional (recommended) | 5000/hr | ✅ Ready |
-| HackerNews | No | Unlimited | ✅ Ready |
-| SearXNG | No | Depends on instance | ✅ Ready |
-| RSS | No | Unlimited | ✅ Ready |
+| Method | Path | Purpose |
+|--------|------|---------|
+| `GET`  | `/health` | Liveness check |
+| `POST` | `/recon` | Run a scan. Body: `{ target, mode?, depth? }`. Auto-persists. |
+| `GET`  | `/investigations?limit=50` | List past investigations (newest first) |
+| `GET`  | `/investigation/:id` | Load a full past investigation |
 
----
+### Response shape
 
-## Self-Hosting (Optional)
-
-For full privacy and capability, self-host these services:
-
-### SearXNG (Metasearch)
-```bash
-docker run -d --name searxng -p 8080:8080 searxng/searxng:latest
-```
-
-### Qdrant (Vector Database)
-```bash
-docker run -d --name qdrant -p 6333:6333 qdrant/qdrant
-```
-
-### Neo4j (Knowledge Graph)
-```bash
-docker run -d --name neo4j -p 7474:7474 -p 7687:7687 neo4j
+```jsonc
+{
+  "success": true,
+  "target":      { "id": "tgt-...", "value": "octocat", "type": "username", ... },
+  "findings":    [ /* Finding[] with significance score + evidence */ ],
+  "beliefs":     [ /* Belief[] derived from findings */ ],
+  "contradictions": [ /* detected conflicts */ ],
+  "brief": {
+    "summary": "...",
+    "establishedFacts": [...],
+    "likelyAssessments": [...],
+    "leads": [{ "priority": "high", "description": "...", "rationale": "..." }],
+    "negativeFindings": [...]
+  },
+  "stats": { "totalFindings": 32, "establishedFacts": 0, "likelyAssessments": 31, "leads": 5, "negativeFindings": 1 }
+}
 ```
 
 ---
@@ -164,90 +104,25 @@ docker run -d --name neo4j -p 7474:7474 -p 7687:7687 neo4j
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      ECHO-OSINT ENGINE                              │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌─────────────┐    ┌──────────────┐    ┌─────────────────────┐   │
-│  │   Reddit    │    │    GitHub    │    │    HackerNews       │   │
-│  │  Collector  │    │   Collector  │    │     Collector       │   │
-│  └──────┬──────┘    └──────┬───────┘    └──────────┬──────────┘   │
-│         │                  │                       │               │
-│         └──────────────────┼───────────────────────┘               │
-│                            ▼                                        │
-│               ┌────────────────────────┐                           │
-│               │   Collector Registry   │                           │
-│               └───────────┬────────────┘                           │
-│                           ▼                                         │
-│  ┌────────────────────────────────────────────────────────────────┐ │
-│  │                    CREWAI RESEARCH CREW                       │ │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────┐        │ │
-│  │  │Discovery │→ │ Collect  │→ │ Analyze  │→ │Validate│→ Synth │ │
-│  │  │  Agent   │  │  Agent   │  │  Agent   │  │ Agent  │→ Agent │ │
-│  │  └──────────┘  └──────────┘  └──────────┘  └────────┘        │ │
-│  └────────────────────────────────────────────────────────────────┘ │
-│                            ▼                                         │
-│               ┌────────────────────────┐                           │
-│               │    NVIDIA NIM LLM      │                           │
-│               │   (Llama 3.1 70B)      │                           │
-│               └───────────┬────────────┘                           │
-│                           ▼                                         │
-│               ┌────────────────────────┐                           │
-│               │   INTELLIGENCE OUTPUT  │                           │
-│               │  • Summary             │                           │
-│               │  • Key Insights        │                           │
-│               │  • Predictions         │                           │
-│               │  • Recommendations     │                           │
-│               └────────────────────────┘                           │
-└─────────────────────────────────────────────────────────────────────┘
+src/
+├── api/server.ts             Express API (recon, history endpoints)
+├── core/
+│   ├── http-client.ts        Retry + TTL cache + concurrency
+│   ├── significance.ts       Multi-factor scoring
+│   ├── belief-space.ts       Belief storage + contradiction detection
+│   ├── brief-generator.ts    Intelligence brief synthesis
+│   └── investigation-store.ts File-based persistence
+├── recon/
+│   ├── username.ts           50+ platform enumeration
+│   └── domain.ts             RDAP + DNS + subdomain (crt.sh)
+├── types/                    Shared types (Target, Finding, Belief, ...)
+└── index.ts                  Programmatic entry + CLI
+
+frontend/                     React + Vite dashboard
+investigations/YYYY-MM-DD/    Auto-saved scan results (gitignored)
 ```
 
----
-
-## Usage Examples
-
-### Tech Trend Detection
-```bash
-npm run dev -- "what frameworks are developers excited about"
-```
-
-### Early Signal Detection
-```bash
-npm run dev -- "what emerging technologies are getting traction"
-```
-
-### Competitive Intelligence
-```bash
-npm run dev -- "compare React vs Vue vs Svelte discussions"
-```
-
-### Market Research
-```bash
-npm run dev -- "what are the problems in the AI industry"
-```
-
----
-
-## Project Structure
-
-```
-echo-osint/
-├── src/
-│   ├── index.ts           # Main engine entry point
-│   ├── config/            # Configuration management
-│   ├── types/             # TypeScript type definitions
-│   ├── collectors/        # Data source collectors
-│   │   ├── reddit.ts      # Reddit collector
-│   │   ├── github.ts      # GitHub collector
-│   │   ├── hackernews.ts  # HackerNews collector
-│   │   └── searxng.ts     # SearXNG collector
-│   └── orchestration/     # CrewAI crew definitions
-├── tests/                 # Test files
-├── examples/              # Usage examples
-├── .env.example           # Environment template
-├── package.json           # Dependencies
-└── tsconfig.json          # TypeScript config
-```
+The pipeline is **deterministic-first**. No LLM is required for Phase 1 — every confidence score traces back to evidence collected from named sources. AI synthesis (Phase 3) and Echo signal tracking (Phase 4) are designed to enhance, not replace, this core. See `docs/design-final-architecture.md`.
 
 ---
 
@@ -255,44 +130,44 @@ echo-osint/
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev -- "query"` | Run an intelligence query |
-| `npm run build` | Compile TypeScript |
+| `npm run start:all` | API on :3001 + dashboard dev server on :3000 (recommended) |
+| `npm run api` | Backend only |
+| `npm run frontend:dev` | Dashboard dev server only |
+| `npm run build` | Compile backend TypeScript |
+| `npm run frontend` | Build production dashboard bundle |
+| `npm run dev -- <target> [mode] [depth]` | CLI recon |
 | `npm test` | Run tests |
-| `npm run lint` | Lint code |
+| `npm run typecheck` | TypeScript check, no emit |
 
 ---
 
 ## Roadmap
 
-- [x] v0.1 - Basic multi-source collection (Reddit, GitHub, HN, SearXNG)
-- [ ] v0.2 - CrewAI research crew integration
-- [ ] v0.3 - NVIDIA NIM synthesis
-- [ ] v0.4 - Knowledge graph for signal propagation
-- [ ] v0.5 - Self-hosted SearXNG integration
-- [ ] v1.0 - Production-ready autonomous intelligence engine
+- [x] **v0.2** — Deterministic recon engine, belief space, dashboard, investigation persistence
+- [ ] **v0.3** — Email recon (HIBP), infrastructure recon (Shodan/Censys), identity resolver
+- [ ] **v0.4** — AI enhancement layer (NVIDIA NIM / structured output) for pivot suggestions and report enrichment
+- [ ] **v0.5** — "Echo" signal tracking: temporal propagation across platforms, velocity, prediction
+- [ ] **v1.0** — Production-ready autonomous intelligence engine
+
+See `docs/design-product-definition.md` for the full vision.
 
 ---
 
 ## Requirements
 
 - Node.js 20+
-- NVIDIA API key (free at https://build.nvidia.com/)
+- No paid API keys required for Phase 1 capability (RDAP, DoH, crt.sh, public profile checks)
 
 ---
 
 ## Disclaimer
 
-This tool is for educational and research purposes. Always:
-- Respect platform terms of service
-- Adhere to rate limits
-- Verify critical intelligence through primary sources
+For authorized security testing, journalism, and research. Respect platform ToS, rate limits, and applicable laws. Verify critical intelligence through primary sources.
 
 ---
 
 <div align="center">
 
-**Built with** ❤️ **using CrewAI + NVIDIA NIM**
-
-<a href="https://github.com/Jinish2170/Echo-OSINT">GitHub</a> • <a href="https://github.com/Jinish2170/Echo-OSINT/issues">Issues</a>
+**MIT License** · <a href="https://github.com/Jinish2170/Echo-OSINT">GitHub</a> · <a href="https://github.com/Jinish2170/Echo-OSINT/issues">Issues</a>
 
 </div>

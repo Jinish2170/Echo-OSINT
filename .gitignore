@@ -43,3 +43,15 @@ temp/
 *.key
 credentials.json
 secrets.yaml
+
+# Investigation outputs (local results, contain target data)
+investigations/
+
+# Local Claude Code / agent state
+.claude/
+.claude-flow/
+.swarm/
+.mcp.json
+
+# Personal launcher scripts (reference local paths/proxies)
+launch_*.bat
