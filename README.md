@@ -34,6 +34,18 @@ Echo-OSINT       → here are the 3 things that matter, here's the evidence, her
 
 ---
 
+## 📸 Dashboard
+
+<div align="center">
+
+<img src="docs/dashboard.png" alt="Echo-OSINT dashboard — username scan results for octocat" width="820" />
+
+*Live scan of `octocat` — 33 findings across 33 platforms (GitHub, Twitter, Instagram, Reddit, Mastodon, Threads, dev.to, PyPI, YouTube, Medium, Substack, Hashnode, DeviantArt, Keybase, SlideShare, Steam, Discord, Twitch, Telegram, Signal, Replit, CodePen, Glitch, Tumblr, Snapchat, TikTok, Pinterest, Flickr, SoundCloud, Last.fm, Behance, ArtStation, …) with significance scoring and 5 prioritized leads.*
+
+</div>
+
+---
+
 ## ✨ Features
 
 | | |
